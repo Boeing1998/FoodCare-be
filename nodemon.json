@@ -1,0 +1,6 @@
+{
+    "env": {
+        "MONGO_ATLAS_PW": "YJv2MpCiNOAszIXj",
+        "JWT_KEY": "bimat"
+    }
+}

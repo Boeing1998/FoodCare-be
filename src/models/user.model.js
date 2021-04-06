@@ -2,7 +2,6 @@ const mongoose = require('mongoose');
 
 const userSchema = mongoose.Schema({
     _id: mongoose.Schema.Types.ObjectId,
-    name: String,    
     email: { 
         type: String, 
         require: true, 
@@ -16,5 +15,21 @@ const userSchema = mongoose.Schema({
     hooby: Object,
     purpose: Object,
 });
+
+// userSchema.static = {
+//     //Duyệt tất cả user
+//     findAllUser() {
+//         return this.find()
+//     },
+//     //Tạo mới user
+//     createUser(user) {
+//         return this.create(user)
+//     },
+//     //Tìm user bằng name
+//     findUserbyName(name) {
+//         return this.find(name).exec()
+//     }
+// }
+
 
 module.exports = mongoose.model('User', userSchema);
