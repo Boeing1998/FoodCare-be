@@ -3,13 +3,14 @@ const app = express();
 const morgan = require("morgan");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
+require('dotenv').config();
 
 const userRoutes = require("./src/routes/user.routes");
 const { json } = require("express");
 
 mongoose.connect('mongodb+srv://Admin:' + process.env.MONGO_ATLAS_PW + '@clusterhdvt.rw3ju.mongodb.net/myFirstDatabase?authSource=admin&replicaSet=atlas-k0bv5n-shard-0&w=majority&readPreference=primary&appname=MongoDB%20Compass&retryWrites=true&ssl=true',
     {
-        useNewUrlParser: true, useUnifiedTopology: true,
+        useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true
     });
 mongoose.Promise = global.Promise;
 app.use(express.json());
