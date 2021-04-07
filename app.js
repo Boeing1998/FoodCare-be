@@ -7,7 +7,7 @@ const mongoose = require("mongoose");
 const userRoutes = require("./src/routes/user.routes");
 const { json } = require("express");
 
-mongoose.connect('mongodb+srv://Admin:'+process.env.MONGO_ATLAS_PW+'@clusterhdvt.rw3ju.mongodb.net/myFirstDatabase?authSource=admin&replicaSet=atlas-k0bv5n-shard-0&w=majority&readPreference=primary&appname=MongoDB%20Compass&retryWrites=true&ssl=true',
+mongoose.connect('mongodb+srv://Admin:' + process.env.MONGO_ATLAS_PW + '@clusterhdvt.rw3ju.mongodb.net/myFirstDatabase?authSource=admin&replicaSet=atlas-k0bv5n-shard-0&w=majority&readPreference=primary&appname=MongoDB%20Compass&retryWrites=true&ssl=true',
     {
         useNewUrlParser: true, useUnifiedTopology: true,
     });
@@ -33,6 +33,9 @@ app.use((req, res, next) => {
 
 // Routes which should handle requests
 app.use("/user", userRoutes);
+app.get("/", (req, res) => {
+    res.send(" Hello  Trung");
+})
 
 app.use((req, res, next) => {
     const error = new Error("Not found");
