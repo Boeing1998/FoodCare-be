@@ -9,8 +9,8 @@ var FoodService = require('../services/food.services')
 exports.getFoods = async function (req, res, next) {
     // Validate request parameters, queries using express-validator
 
-    const page = req.body.page ? req.body.page : 0;
-    const limit = req.body.limit ? req.body.limit : 10;
+    const page = req.query.page ? parseInt(req.query.page) : 0;
+    const limit = req.query.limit ? parseInt(req.query.limit) : 10;
 
     try {
         var foods = await FoodService.getFoods({}, page, limit)
