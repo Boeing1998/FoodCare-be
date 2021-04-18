@@ -61,7 +61,7 @@ exports.user_login = (req, res, next) => {
       if (user.length < 1) {
         return res.status(401).json({
           statuscode: 401,
-          message: "Email does not exist",
+          message: "Email or Password is not exits",
           error: '',
           data: '',
         });
@@ -70,7 +70,7 @@ exports.user_login = (req, res, next) => {
         if (err) {
           return res.status(401).json({
             statuscode: 401,
-            message: "Auth failed",
+            message: "Email or Password is not exits",
             error: err,
             data: ''
           });
@@ -83,25 +83,26 @@ exports.user_login = (req, res, next) => {
             },
             process.env.JWT_KEY,
             {
-              expiresIn: "1h"
+              expiresIn: "20h"
             }
           );
           return res.status(200).json({
             statuscode: 200,
-            message: "Auth successful",
+            message: "Login successfully",
             error: '',
             data: {
               token: token
             }
 
           });
+        } else {
+          return res.status(401).json({
+            statuscode: 401,
+            message: "Email or Password is not exits",
+            error: '',
+            data: ''
+          });
         }
-        res.status(401).json({
-          statuscode: 401,
-          message: "Auth failed",
-          error: '',
-          data: ''
-        });
       });
     })
     .catch(err => {

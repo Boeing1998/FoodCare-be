@@ -62,11 +62,11 @@ app.use((req, res, next) => {
 app.use("/user", userRoutes);
 app.use("/food", foodRoutes);
 app.get("/", (req, res) => {
-    res.send(" Hello  Trung");
+    res.send(" DM  Vinh");
 })
 
 app.use((req, res, next) => {
-    const error = new Error("Not found");
+    const error = new Error("Route not found");
     error.status = 404;
     next(error);
 });
