@@ -11,7 +11,7 @@ exports.getFoods = async function (req, res, next) {
 
     const page = req.query.page ? parseInt(req.query.page) : 1;
     const limit = req.query.limit ? parseInt(req.query.limit) : 10;
-    const type = req.query.type ? req.query.type : 'All'
+    const type = req.query.type ? req.query.type : 'all'
     try {
         if (type === 'all') {
             var foods = await FoodService.getFoods({}, page, limit)
