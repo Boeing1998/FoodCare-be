@@ -6,7 +6,12 @@ const jwt = require("jsonwebtoken");
 const User = require("../models/user.model");
 
 exports.user_signup = (req, res, next) => {
-  User.find({ email: req.body.email })
+  User.find({ 
+    $and: [
+      { email: req.body.email },
+      { email: { $ne: null } }
+    ]
+   })
     .exec()
     .then(user => {
       if (user.length >= 1) {
@@ -25,10 +30,8 @@ exports.user_signup = (req, res, next) => {
           } else {
             const user = new User({
               _id: new mongoose.Types.ObjectId(),
-              email: req.body.email,
-              email: { $ne: null },
+              email: req.body.email || "Error mail null" ,
               password: hash,
-              password: { $ne: null },
             });
             user
               .save()
