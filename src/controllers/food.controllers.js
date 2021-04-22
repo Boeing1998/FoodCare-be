@@ -9,7 +9,7 @@ const FoodService = require('../services/food.services')
 exports.getFoods = async function (req, res, next) {
     // Validate request parameters, queries using express-validator
 
-    const page = req.query.page ? parseInt(req.query.page) : 1;
+    const page = req.query.page ? parseInt(req.query.page) : 0;
     const limit = req.query.limit ? parseInt(req.query.limit) : 10;
     const type = req.query.type ? req.query.type : 'all'
     try {

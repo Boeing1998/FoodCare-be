@@ -26,15 +26,16 @@ exports.user_signup = (req, res, next) => {
             const user = new User({
               _id: new mongoose.Types.ObjectId(),
               email: req.body.email,
-              password: hash
+              email: { $ne: null },
+              password: hash,
+              password: { $ne: null },
             });
             user
               .save()
               .then(result => {
-                console.log(result);
                 res.status(201).json({
                   statuscode: 201,
-                  message: "User creation successfully ",
+                  message: "Sign Up Success",
                   error: '',
                   data: '',
                 });
@@ -43,7 +44,7 @@ exports.user_signup = (req, res, next) => {
                 console.log(err);
                 res.status(500).json({
                   statuscode: 500,
-                  message: "User creation failed",
+                  message: "Sign Up failed",
                   error: err.errors.email.name,
                   data: '',
                 });
@@ -55,7 +56,12 @@ exports.user_signup = (req, res, next) => {
 };
 
 exports.user_login = (req, res, next) => {
-  User.find({ email: req.body.email })
+  User.find({
+    $and: [
+      { email: req.body.email },
+      { email: { $ne: null } }
+    ]
+  })
     .exec()
     .then(user => {
       if (user.length < 1) {
