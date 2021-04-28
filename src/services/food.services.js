@@ -3,8 +3,8 @@ var Food = require('../models/food.model')
 exports.getFoods = async (query, page, limit) => {
     try {
         var foods = await Food
-            .find(query)
-            .skip(page*limit)
+            .find(query, { _id: 0, food_name: 1, id: 1, images: 1, nutrions: 1 })
+            .skip(page * limit)
             .limit(limit)
             .exec();
         return foods;
@@ -13,11 +13,11 @@ exports.getFoods = async (query, page, limit) => {
         throw Error('Error while Paginating Foods')
     }
 }
-exports.getFoodById = async (id) => {
-    try{
+exports.getFoodById = async (idParam) => {
+    try {
         var foodDetails = await Food
-        .findById(id)
-        .exec()
+            .find({id:idParam})
+            .exec()
         return foodDetails;
     } catch (e) {
         throw Error('Error while get food by ID')
