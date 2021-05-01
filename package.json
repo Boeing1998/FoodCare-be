@@ -1,0 +1,34 @@
+{
+  "name": "foodcare-be",
+  "version": "1.0.0",
+  "description": "FoodCare is a system which allows users to build, adjust their own diet plan with the available food while having the nutrition calculated. User will also receive a warning if the chosen one do not match their body’s need.",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Boeing1998/FoodCare-be.git"
+  },
+  "author": "HDVT",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Boeing1998/FoodCare-be/issues"
+  },
+  "homepage": "https://github.com/Boeing1998/FoodCare-be#readme",
+  "dependencies": {
+    "bcrypt": "^5.0.1",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^5.12.1",
+    "morgan": "^1.10.0",
+    "uuid": "^8.3.2"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.7",
+    "swagger-jsdoc": "^7.0.0-rc.6",
+    "swagger-ui-express": "^4.1.6"
+  }
+}
