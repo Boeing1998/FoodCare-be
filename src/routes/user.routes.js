@@ -4,14 +4,14 @@ const router = express.Router();
 const UserController = require('../controllers/user.controllers');
 const checkAuth = require('../helper/check-auth');
 
-router.post("/signup", UserValidation.register, UserController.user_signup);
+router.post("/signup", UserController.user_signup);
 
 router.post("/login", UserController.user_login);
 
-router.delete("/logout", checkAuth, UserController.logout )
+// router.delete("/logout", checkAuth, UserController.logout )
 
-router.delete("/:userId", checkAuth, UserController.user_delete);
+// router.delete("/:userId", checkAuth, UserController.user_delete);
 
-router.put("e");
+// router.put("e");
 
 module.exports = router;
