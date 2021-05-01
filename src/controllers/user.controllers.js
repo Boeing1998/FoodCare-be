@@ -16,7 +16,7 @@ exports.user_signup = (req, res, next) => {
     .then(user => {
       if (user.length >= 1) {
         return res.status(409).json({
-          statuscode: 409,
+          status: 409,
           message: "Mail exists",
           error: '',
           data: '',
@@ -37,7 +37,7 @@ exports.user_signup = (req, res, next) => {
               .save()
               .then(result => {
                 res.status(201).json({
-                  statuscode: 201,
+                  status: 201,
                   message: "Sign Up Success",
                   error: '',
                   data: '',
@@ -46,7 +46,7 @@ exports.user_signup = (req, res, next) => {
               .catch(err => {
                 console.log(err);
                 res.status(500).json({
-                  statuscode: 500,
+                  status: 500,
                   message: "Sign Up failed",
                   error: err.errors.email.name,
                   data: '',
@@ -69,7 +69,7 @@ exports.user_login = (req, res, next) => {
     .then(user => {
       if (user.length < 1) {
         return res.status(401).json({
-          statuscode: 401,
+          status: 401,
           message: "Email or Password is not exits",
           error: '',
           data: '',
@@ -78,7 +78,7 @@ exports.user_login = (req, res, next) => {
       bcrypt.compare(req.body.password, user[0].password, (err, result) => {
         if (err) {
           return res.status(401).json({
-            statuscode: 401,
+            status: 401,
             message: "Email or Password is not exits",
             error: err,
             data: ''
@@ -96,7 +96,7 @@ exports.user_login = (req, res, next) => {
             }
           );
           return res.status(200).json({
-            statuscode: 200,
+            status: 200,
             message: "Login successfully",
             error: '',
             data: {
@@ -106,7 +106,7 @@ exports.user_login = (req, res, next) => {
           });
         } else {
           return res.status(401).json({
-            statuscode: 401,
+            status: 401,
             message: "Email or Password is not exits",
             error: '',
             data: ''
@@ -117,7 +117,7 @@ exports.user_login = (req, res, next) => {
     .catch(err => {
       console.log(err);
       res.status(500).json({
-        statuscode: 500,
+        status: 500,
         message: "Error at user.controllers.js",
         error: err,
         data: ''
@@ -130,7 +130,7 @@ exports.user_delete = (req, res, next) => {
     .exec()
     .then(result => {
       res.status(200).json({
-        statuscode: 200,
+        status: 200,
         message: "User deleted",
         error: '',
         data: ''
@@ -139,7 +139,7 @@ exports.user_delete = (req, res, next) => {
     .catch(err => {
       console.log(err);
       res.status(500).json({
-        statuscode: 500,
+        status: 500,
         message: "Can't find this Email",
         error: err,
         data: ''

@@ -9,7 +9,7 @@ module.exports = (req, res, next) => {
         next();
     } catch (error) {
         return res.status(401).json({
-            statuscode: 401,
+            status: 401,
             message: 'Lỗi Xác thực tại Check Auth',
             error: err,
             data: '',
