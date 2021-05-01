@@ -12,6 +12,6 @@ router.delete("/logout", checkAuth, UserController.logout )
 
 router.delete("/:userId", checkAuth, UserController.user_delete);
 
-router.put();
+router.put("/asd");
 
 module.exports = router;
