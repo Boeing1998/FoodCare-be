@@ -185,9 +185,9 @@ exports.editUser = async (req, res, next) => {
   const gender = req.body.gender || userDetail.gender
   const targetU = req.body.targetU || userDetail.targetU
   const customFood = req.body.customFood || userDetail.customFood 
-  const collecTion = req.body.collecTion || userDetail.collecTion 
-  const fav = req.body.fav || userDetail.fav 
-  const menu = req.body.menu || userDetail.menu 
+  const collecTion = userDetail.collecTion 
+  const fav = userDetail.fav 
+  const menu =  userDetail.menu 
   const isBanned = userDetail.isBanned
 
   const updateOps = {
@@ -202,9 +202,7 @@ exports.editUser = async (req, res, next) => {
     menu: menu,
     isBanned: isBanned,
   };
-  // for (const ops of req.body) {
-  //   updateOps[ops.propName] = ops.value;
-  // }
+
 
   User.updateOne({ _id: id.userId }, { $set: updateOps })
     .exec()
@@ -223,32 +221,7 @@ exports.editUser = async (req, res, next) => {
       });
     });
 }
-//////////////////////////////////////
-// exports.editUser = (req, res, next) => {
-//   const token = req.headers.authorization.split(" ")[1];
-//   const id = jwt_decode(token);
-//   const updateOps = {};
-//   for (const ops of req.body) {
-//     updateOps[ops.propName] = ops.value;
-//   }
-//   User.updateOne({ _id: id.userId }, { $set: updateOps })
-//     .exec()
-//     .then(result => {
-//       res.status(200).json({
-//         status: 200,
-//         message: "Edit User Success",
-//         error: '',
-//         data: '',
-//       });
-//     })
-//     .catch(err => {
-//       console.log(err);
-//       res.status(500).json({
-//         error: err
-//       });
-//     });
-// }
-//////////////////////////////////////
+
 exports.user_delete = (req, res, next) => {
   User.remove({ _id: req.params.userId })
     .exec()
