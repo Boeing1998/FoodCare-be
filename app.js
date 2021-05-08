@@ -62,7 +62,7 @@ app.use((req, res, next) => {
 app.use("/user", userRoutes);
 app.use("/food", foodRoutes);
 app.get("/", (req, res) => {
-    res.send(" DM  Vinh");
+    res.send("Huy oi lam on");
 })
 
 app.use((req, res, next) => {
