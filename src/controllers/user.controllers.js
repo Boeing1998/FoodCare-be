@@ -1,16 +1,22 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+// require('dotenv').config();
 
 const User = require("../models/user.model");
 
 exports.user_signup = (req, res, next) => {
-  User.find({ email: req.body.email })
+  User.find({ 
+    $and: [
+      { email: req.body.email },
+      { email: { $ne: null } }
+    ]
+   })
     .exec()
     .then(user => {
       if (user.length >= 1) {
         return res.status(409).json({
-          statuscode: 409,
+          status: 409,
           message: "Mail exists",
           error: '',
           data: '',
@@ -24,16 +30,15 @@ exports.user_signup = (req, res, next) => {
           } else {
             const user = new User({
               _id: new mongoose.Types.ObjectId(),
-              email: req.body.email,
-              password: hash
+              email: req.body.email || "Error mail null" ,
+              password: hash,
             });
             user
               .save()
               .then(result => {
-                console.log(result);
                 res.status(201).json({
-                  statuscode: 201,
-                  message: "User creation successfully ",
+                  status: 201,
+                  message: "Sign Up Success",
                   error: '',
                   data: '',
                 });
@@ -41,8 +46,8 @@ exports.user_signup = (req, res, next) => {
               .catch(err => {
                 console.log(err);
                 res.status(500).json({
-                  statuscode: 500,
-                  message: "User creation failed",
+                  status: 500,
+                  message: "Sign Up failed",
                   error: err.errors.email.name,
                   data: '',
                 });
@@ -54,13 +59,18 @@ exports.user_signup = (req, res, next) => {
 };
 
 exports.user_login = (req, res, next) => {
-  User.find({ email: req.body.email })
+  User.find({
+    $and: [
+      { email: req.body.email },
+      { email: { $ne: null } }
+    ]
+  })
     .exec()
     .then(user => {
       if (user.length < 1) {
         return res.status(401).json({
-          statuscode: 401,
-          message: "Email does not exist",
+          status: 401,
+          message: "Email or Password is not exits",
           error: '',
           data: '',
         });
@@ -68,8 +78,8 @@ exports.user_login = (req, res, next) => {
       bcrypt.compare(req.body.password, user[0].password, (err, result) => {
         if (err) {
           return res.status(401).json({
-            statuscode: 401,
-            message: "Auth failed",
+            status: 401,
+            message: "Email or Password is not exits",
             error: err,
             data: ''
           });
@@ -82,31 +92,32 @@ exports.user_login = (req, res, next) => {
             },
             process.env.JWT_KEY,
             {
-              expiresIn: "1h"
+              expiresIn: "20h"
             }
           );
           return res.status(200).json({
-            statuscode: 200,
-            message: "Auth successful",
+            status: 200,
+            message: "Login successfully",
             error: '',
             data: {
               token: token
             }
 
           });
+        } else {
+          return res.status(401).json({
+            status: 401,
+            message: "Email or Password is not exits",
+            error: '',
+            data: ''
+          });
         }
-        res.status(401).json({
-          statuscode: 401,
-          message: "Auth failed",
-          error: '',
-          data: ''
-        });
       });
     })
     .catch(err => {
       console.log(err);
       res.status(500).json({
-        statuscode: 500,
+        status: 500,
         message: "Error at user.controllers.js",
         error: err,
         data: ''
@@ -119,7 +130,7 @@ exports.user_delete = (req, res, next) => {
     .exec()
     .then(result => {
       res.status(200).json({
-        statuscode: 200,
+        status: 200,
         message: "User deleted",
         error: '',
         data: ''
@@ -128,7 +139,7 @@ exports.user_delete = (req, res, next) => {
     .catch(err => {
       console.log(err);
       res.status(500).json({
-        statuscode: 500,
+        status: 500,
         message: "Can't find this Email",
         error: err,
         data: ''
