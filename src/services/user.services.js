@@ -22,3 +22,4 @@ exports.checkExits = async (query, page, limit) => {
         throw Error('Email or Password is not exits')
     }
 }
+

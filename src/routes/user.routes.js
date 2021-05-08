@@ -8,6 +8,7 @@ const RegisterValidation = require('../validations/register.validation');
 
 router.post("/signup", RegisterValidation, UserController.user_signup);
 
+
 router.post("/login", UserController.user_login);
 
 router.delete("/logout", checkAuth, UserController.logout )
@@ -19,5 +20,8 @@ router.get("/profile", checkAuth, UserController.showDetail );
 router.put("/edit", checkAuth, UserController.editUser );
 
 // router.delete("/:userId", checkAuth, UserController.user_delete);
+
+
+router.put("/edit");
 
 module.exports = router;

@@ -19,6 +19,7 @@ exports.getFoodById = async (idParam) => {
             .find({id:idParam})
             .exec()
         return foodDetails[0];
+
     } catch (e) {
         throw Error('Error while get food by ID')
     }

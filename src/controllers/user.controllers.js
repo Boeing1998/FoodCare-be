@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const jwt_decode = require("jwt-decode");
+
 // require('dotenv').config();
 
 const User = require("../models/user.model");
@@ -15,6 +16,7 @@ exports.user_signup = (req, res, next) => {
       { email: req.body.email },
       { email: { $ne: null } }
     ]
+
   })
     .exec()
     .then(user => {
