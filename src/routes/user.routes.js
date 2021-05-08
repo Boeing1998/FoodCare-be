@@ -20,6 +20,4 @@ router.put("/edit", checkAuth, UserController.editUser );
 
 // router.delete("/:userId", checkAuth, UserController.user_delete);
 
-
-
 module.exports = router;
