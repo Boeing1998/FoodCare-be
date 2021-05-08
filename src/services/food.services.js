@@ -18,7 +18,7 @@ exports.getFoodById = async (idParam) => {
         var foodDetails = await Food
             .find({id:idParam})
             .exec()
-        return foodDetails[0];
+        return foodDetails;
     } catch (e) {
         throw Error('Error while get food by ID')
     }
