@@ -4,12 +4,20 @@ const router = express.Router();
 const UserController = require('../controllers/user.controllers');
 const checkAuth = require('../helper/check-auth');
 
-router.post("/signup",  UserController.user_signup);
+const RegisterValidation = require('../validations/register.validation');
+
+router.post("/signup", RegisterValidation, UserController.user_signup);
+
 
 router.post("/login", UserController.user_login);
 
-// router.delete("/logout", checkAuth, UserController.logout )
+router.delete("/logout", checkAuth, UserController.logout )
 
-// router.delete("/:userId", checkAuth, UserController.user_delete);
+// router.get("/:userId", checkAuth, UserController)
+
+router.get("/profile", checkAuth, UserController.showDetail );
+
+router.put("/edit", checkAuth, UserController.editUser );
+
 
 module.exports = router;
