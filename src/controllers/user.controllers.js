@@ -159,11 +159,23 @@ exports.showDetail = async function (req, res, next) {
     const token = req.headers.authorization.split(" ")[1];
     const id = jwt_decode(token);
     var userDetail = await UserService.getUserbyId(id.userId)
+    var currentYear = new Date().getFullYear()
+    var year = userDetail.dob.split("-")
     return res.status(200).json({
       status: 200,
       message: "Successfully User Details Retrieved",
       error: '',
-      data: userDetail
+      data: {
+        isBanned: userDetail.isBanned,
+        _id: userDetail._id,
+        email: userDetail.email,
+        firstName: userDetail.firstName,
+        lastName: userDetail.lastName,
+        dob: userDetail.dob,
+        age: currentYear - parseInt(year[0]),
+        gender: userDetail.gender,
+        targetU: userDetail.targetU,
+      }
 
     });
   } catch (e) {
@@ -186,10 +198,10 @@ exports.editUser = async (req, res, next) => {
   const dob = req.body.dob || userDetail.dob
   const gender = req.body.gender || userDetail.gender
   const targetU = req.body.targetU || userDetail.targetU
-  const customFood = req.body.customFood || userDetail.customFood 
-  const collecTion = userDetail.collecTion 
-  const fav = userDetail.fav 
-  const menu =  userDetail.menu 
+  const customFood = req.body.customFood || userDetail.customFood
+  const collecTion = userDetail.collecTion
+  const fav = userDetail.fav
+  const menu = userDetail.menu
   const isBanned = userDetail.isBanned
 
   const updateOps = {
@@ -204,7 +216,6 @@ exports.editUser = async (req, res, next) => {
     menu: menu,
     isBanned: isBanned,
   };
-
 
   User.updateOne({ _id: id.userId }, { $set: updateOps })
     .exec()
@@ -223,6 +234,93 @@ exports.editUser = async (req, res, next) => {
       });
     });
 }
+
+////////////////////////////////////////////////////////////////
+exports.changePassword = async (req, res, next) => {
+  const token = req.headers.authorization.split(" ")[1];
+  const id = jwt_decode(token);
+  const userDetail = await UserService.getUserbyId(id.userId)
+
+  const firstName = userDetail.firstName
+  const lastName = userDetail.lastName
+  const dob = userDetail.dob
+  const gender = userDetail.gender
+  const targetU = userDetail.targetU
+  const customFood = userDetail.customFood
+  const collecTion = userDetail.collecTion
+  const fav = userDetail.fav
+  const menu = userDetail.menu
+  const isBanned = userDetail.isBanned
+
+  bcrypt.compare(req.body.password, userDetail.password, (err, result) => {
+    if (err) {
+      return res.status(401).json({
+        status: 401,
+        message: "Old password is incorrect",
+        error: err,
+        data: ''
+      });
+    }
+    if (result) {
+
+
+      bcrypt.hash(req.body.newPassword, 10, (err, hash) => {
+        if (err) {
+          return res.status(500).json({
+            error: 'Bcrypt.hash at user.controllers.js ' + err
+          });
+        } else {
+          const updateOps = {
+            firstName: firstName,
+            lastName: lastName,
+            dob: dob,
+            gender: gender,
+            targetU: targetU,
+            customFood: customFood,
+            collecTion: collecTion,
+            fav: fav,
+            menu: menu,
+            isBanned: isBanned,
+            password: hash
+          };
+          User.updateOne({ _id: id.userId }, { $set: updateOps })
+            .exec()
+            .then(result => {
+              res.status(200).json({
+                status: 200,
+                message: "Change Password Success",
+                error: '',
+                data: '',
+              });
+            })
+            .catch(err => {
+              res.status(500).json({
+                status: 500,
+                message: "Database busy",
+                error: 'err when update data in to database',
+                data: '',
+              });
+            });
+        }
+      })
+
+
+
+
+
+    } else {
+      return res.status(401).json({
+        status: 401,
+        message: "Incorrect password",
+        error: '',
+        data: ''
+      });
+    }
+  })
+
+
+}
+// /////////////////////////////////////////////////////////////////////////////
 
 exports.user_delete = (req, res, next) => {
   User.remove({ _id: req.params.userId })
