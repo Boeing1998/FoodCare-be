@@ -14,13 +14,14 @@ router.post("/login", UserController.user_login);
 
 router.delete("/logout", checkAuth, UserController.logout)
 
-// router.get("/:userId", checkAuth, UserController)
-
 router.get("/profile", checkAuth, UserController.showDetail);
 
 router.put("/edit", checkAuth, UserController.editUser);
 
 router.put("/password", checkAuth, ChangePassValidation, UserController.changePassword);
 
+router.patch("/addfood", checkAuth, UserController.addFavFood);
+
+router.patch("/delfood", checkAuth, UserController.delFavFood);
 
 module.exports = router;

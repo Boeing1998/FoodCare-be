@@ -24,3 +24,16 @@ exports.getFoodById = async (idParam) => {
         throw Error('Error while get food by ID')
     }
 }
+exports.getManyFoods = async  (idParam) => {
+    try {
+        let foods = await Promise.all(idParam.map( async item => {
+            let food = await Food
+            .findOne({id: item}, { _id: 0, food_name: 1, id: 1, images: 1, nutrions: 1 })
+            return food
+        })) 
+        return foods
+    } catch (e) {
+        // Log Errors
+        throw Error('Error while Paginating Foods')
+    }
+}

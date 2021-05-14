@@ -13,11 +13,13 @@ const userSchema = mongoose.Schema({
     lastName: String,
     gender: Boolean,
     phoneNumber: Number,
-    dob: String,
+    dob: { type: String, default: "1990-01-01"},
     targetU: String,
     customFood: Object,
-    collecTion: Object,
-    fav: Object,
+    fav: {
+        type: Array,
+        default: []
+    },
     menu: Object,
     isBanned:  {type: Boolean, default: false}
 });

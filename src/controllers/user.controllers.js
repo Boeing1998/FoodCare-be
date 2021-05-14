@@ -7,6 +7,7 @@ const jwt_decode = require("jwt-decode");
 
 const User = require("../models/user.model");
 
+const FoodService = require('../services/food.services')
 var TokenService = require('../services/token.services')
 var UserService = require('../services/user.services')
 
@@ -156,11 +157,15 @@ exports.logout = (req, res, next) => {
 
 exports.showDetail = async function (req, res, next) {
   try {
-    const token = req.headers.authorization.split(" ")[1];
-    const id = jwt_decode(token);
-    var userDetail = await UserService.getUserbyId(id.userId)
+    let token1 = req.headers.authorization.split(" ")[1];
+    let id1 = jwt_decode(token1);
+    var userDetail = await UserService.getUserbyId(id1.userId)
     var currentYear = new Date().getFullYear()
     var year = userDetail.dob.split("-")
+
+    let food = await FoodService.getManyFoods(userDetail.fav)
+
+
     return res.status(200).json({
       status: 200,
       message: "Successfully User Details Retrieved",
@@ -175,6 +180,7 @@ exports.showDetail = async function (req, res, next) {
         age: currentYear - parseInt(year[0]),
         gender: userDetail.gender,
         targetU: userDetail.targetU,
+        fav: food
       }
 
     });
@@ -235,7 +241,6 @@ exports.editUser = async (req, res, next) => {
     });
 }
 
-////////////////////////////////////////////////////////////////
 exports.changePassword = async (req, res, next) => {
   const token = req.headers.authorization.split(" ")[1];
   const id = jwt_decode(token);
@@ -262,8 +267,6 @@ exports.changePassword = async (req, res, next) => {
       });
     }
     if (result) {
-
-
       bcrypt.hash(req.body.newPassword, 10, (err, hash) => {
         if (err) {
           return res.status(500).json({
@@ -303,11 +306,6 @@ exports.changePassword = async (req, res, next) => {
             });
         }
       })
-
-
-
-
-
     } else {
       return res.status(401).json({
         status: 401,
@@ -320,7 +318,57 @@ exports.changePassword = async (req, res, next) => {
 
 
 }
-// /////////////////////////////////////////////////////////////////////////////
+
+exports.addFavFood = async function (req, res, next) {
+  const foodid = req.body.foodId;
+  const token = req.headers.authorization.split(" ")[1];
+  const id = jwt_decode(token);
+  try {
+      var foods = await UserService.addFav(id.userId,foodid)
+      return res.status(200).json({
+          status: 200,
+          message: "Successfully Add Favorite",
+          error: '',
+          data: ""
+
+      });
+  } catch (e) {
+      return res.status(400).json({
+          status: 400,
+          message: "",
+          error: e.message,
+          data: ''
+      });
+  }
+};
+
+
+exports.delFavFood = async function (req, res, next) {
+  const foodid = req.body.foodId;
+  const token = req.headers.authorization.split(" ")[1];
+  const id = jwt_decode(token);
+  try {
+      var foods = await UserService.delFav(id.userId,foodid)
+      return res.status(200).json({
+          status: 200,
+          message: "Successfully Remove Favorite",
+          error: '',
+          data: ""
+
+      });
+  } catch (e) {
+      return res.status(400).json({
+          status: 400,
+          message: "",
+          error: e.message,
+          data: ''
+      });
+  }
+};
+
+
+
+
 
 exports.user_delete = (req, res, next) => {
   User.remove({ _id: req.params.userId })
