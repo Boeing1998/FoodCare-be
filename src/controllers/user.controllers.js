@@ -354,7 +354,6 @@ exports.delFavFood = async function (req, res, next) {
           message: "Successfully Remove Favorite",
           error: '',
           data: ""
-
       });
   } catch (e) {
       return res.status(400).json({
