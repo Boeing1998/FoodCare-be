@@ -8,11 +8,16 @@ module.exports = async (req, res, next) => {
         const decoded = jwt.verify(token, process.env.JWT_KEY);
         req.userData = decoded;
         var tokens = await Token
-            .find({ token: token })
-        if(tokens) {
+            .find({ "token": token })
+        if(tokens[0]) {
             next();
         } else {
-            throw "Not have token"
+            return res.status(401).json({
+                status: 401,
+                message: 'Không có token trong db',
+                error: "",
+                data: '',
+            });
         }
         
     } catch (error) {

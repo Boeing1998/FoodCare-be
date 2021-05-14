@@ -4,8 +4,7 @@
   "description": "FoodCare is a system which allows users to build, adjust their own diet plan with the available food while having the nutrition calculated. User will also receive a warning if the chosen one do not match their body’s need.",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon server.js",
-    "debug": "nodemon server.js",
+    "start": "",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
