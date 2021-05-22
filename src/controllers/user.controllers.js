@@ -162,9 +162,7 @@ exports.showDetail = async function (req, res, next) {
     var userDetail = await UserService.getUserbyId(id1.userId)
     var currentYear = new Date().getFullYear()
     var year = userDetail.dob.split("-")
-    // console.log(userDetail)
     let food = await FoodService.getManyFoods(userDetail.fav)
-
 
     return res.status(200).json({
       status: 200,
@@ -356,7 +354,6 @@ exports.delFavFood = async function (req, res, next) {
           message: "Successfully Remove Favorite",
           error: '',
           data: ""
-
       });
   } catch (e) {
       return res.status(400).json({
