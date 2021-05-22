@@ -162,7 +162,7 @@ exports.showDetail = async function (req, res, next) {
     var userDetail = await UserService.getUserbyId(id1.userId)
     var currentYear = new Date().getFullYear()
     var year = userDetail.dob.split("-")
-
+    // console.log(userDetail)
     let food = await FoodService.getManyFoods(userDetail.fav)
 
 
@@ -180,6 +180,7 @@ exports.showDetail = async function (req, res, next) {
         age: currentYear - parseInt(year[0]),
         gender: userDetail.gender,
         targetU: userDetail.targetU,
+        role:  userDetail.role,
         fav: food
       }
 
@@ -208,6 +209,7 @@ exports.editUser = async (req, res, next) => {
   const collecTion = userDetail.collecTion
   const fav = userDetail.fav
   const menu = userDetail.menu
+  const role = userDetail.isBanned
   const isBanned = userDetail.isBanned
 
   const updateOps = {

@@ -96,7 +96,7 @@ exports.addFood = async function (req, res, next) {
     const token = req.headers.authorization.split(" ")[1];
     const id = jwt_decode(token);
     const collId = req.body.collectionId
-    const foodid = req.body.foodId;
+    const foodid = req.body.foodId; // đây là _id của mongo
     try {
         var foods = await CollectionService.addFoodIntoColl(id.userId,collId, foodid)
         return res.status(200).json({
@@ -119,7 +119,7 @@ exports.delFood = async function (req, res, next) {
     const token = req.headers.authorization.split(" ")[1];
     const id = jwt_decode(token);
     const collId = req.body.collectionId
-    const foodid = req.body.foodId;
+    const foodid = req.body.foodId; // đây là _id của mongo
     try {
         var foods = await CollectionService.delFoodFromColl(id.userId,collId, foodid)
         return res.status(200).json({

@@ -3,6 +3,7 @@ const router = express.Router();
 
 const UserController = require('../controllers/user.controllers');
 const checkAuth = require('../helper/check-auth');
+const checkAdmin = require('../helper/check-admin'); // check xem có phải admin không ?
 
 const RegisterValidation = require('../validations/register.validation');
 const ChangePassValidation = require('../validations/user.validation');

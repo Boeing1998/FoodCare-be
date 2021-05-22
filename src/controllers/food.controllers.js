@@ -1,13 +1,8 @@
 const mongoose = require("mongoose");
-// const bcrypt = require("bcrypt");
-// const jwt = require("jsonwebtoken");
 
-// const Food = require("../models/food.model");
 const FoodService = require('../services/food.services')
 
 exports.getFoods = async function (req, res, next) {
-    // Validate request parameters, queries using express-validator
-
     const page = req.query.page ? parseInt(req.query.page) : 0;
     const limit = req.query.limit ? parseInt(req.query.limit) : 10;
     const type = req.query.type ? req.query.type : 'all'
@@ -38,7 +33,7 @@ exports.getFoods = async function (req, res, next) {
 }
 
 exports.products_get_product = async function (req, res, next) {
-    const id = req.params.foodId;
+    const id = req.params.foodId; //đây là id mongo
     try {
         var foods = await FoodService.getFoodById(id)
         return res.status(200).json({
@@ -57,3 +52,65 @@ exports.products_get_product = async function (req, res, next) {
         });
     }
 };
+
+exports.createFood = async function (req, res, next) {
+    let value = {...req.body}
+    try {
+        let food = await FoodService.newFood(value)
+        return res.status(200).json({
+            status: 200,
+            message: "Successfully Add Food",
+            error: '',
+            data: food,
+        });
+    } catch (e) {
+        return res.status(400).json({
+            status: 400,
+            message: "",
+            error: e.message,
+            data: ''
+        });
+    }
+}
+exports.editFood = async (req, res, next) => {
+    const _id = req.body.foodId;
+    let value = {...req.body}
+    delete value.foodId;
+    try {
+        await FoodService.editFoodByID(_id,value)
+        return res.status(200).json({
+            status: 200,
+            message: "Successfully Edit Food",
+            error: '',
+            data: "",
+        });
+    } catch (e) {
+        return res.status(400).json({
+            status: 400,
+            message: "",
+            error: e.message,
+            data: ''
+        });
+    }
+  }
+
+  exports.deleteFood = async (req, res, next) => {
+    const _id = req.body.foodId;
+    try {   
+        await FoodService.deleteFoodByID(_id)
+        return res.status(200).json({
+            status: 200,
+            message: "Successfully Delete Food",
+            error: '',
+            data: "",
+        });
+    } catch (e) {
+        return res.status(400).json({
+            status: 400,
+            message: "",
+            error: e.message,
+            data: ''
+        });
+    }
+  }
+

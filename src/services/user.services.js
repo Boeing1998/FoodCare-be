@@ -20,24 +20,6 @@ exports.delFav = async (idParam, favParam) => {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 exports.getUserbyId = async (idParam) => {
     try {
         var userDetail = await User

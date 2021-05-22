@@ -1,6 +1,8 @@
 const express = require("express");
 const router = express.Router();
 
+const checkAdmin = require('../helper/check-admin');
+
 const CollectionController = require('../controllers/collection.controllers');
 
 const checkAuth = require('../helper/check-auth');

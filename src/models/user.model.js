@@ -14,6 +14,7 @@ const userSchema = mongoose.Schema({
     gender: Boolean,
     phoneNumber: Number,
     dob: { type: String, default: "1990-01-01"},
+    role: { type: String, default: "user"},
     targetU: String,
     customFood: Object,
     fav: {
