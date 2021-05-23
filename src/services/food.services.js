@@ -28,7 +28,6 @@ exports.getFoodById = async (idParam) => {
 
 exports.getManyFoods = async (idParam) => {
     try {
-        console.log("test" +idParam)
         let foods = await Promise.all(idParam.map(async item => {
             let food = await Food
                 .findOne({ _id: item }, { _id: 1, food_name: 1, id: 1, images: 1, nutrions: 1 })
@@ -37,7 +36,7 @@ exports.getManyFoods = async (idParam) => {
         return foods
     } catch (e) {
         // Log Errors
-        throw Error('Không tìm thấy food trong phần favorite của user')
+        throw Error('Không tìm thấy food của user')
     }
 }
 

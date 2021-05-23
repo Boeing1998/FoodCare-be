@@ -1,7 +1,7 @@
 const { Schema, model } = require('mongoose');
 
 const MenuSchema = new Schema({
-    idUser: String,
+    userId: String,
     breakfast: {
         type: Array,
         default: []
@@ -14,7 +14,7 @@ const MenuSchema = new Schema({
         type: Array,
         default: []
     },
-    dayMenu: Date
+    dayMenu: { type: Date, default: Date.now }
 },
     {
         strict: false,
