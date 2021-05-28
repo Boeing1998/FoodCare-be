@@ -25,4 +25,8 @@ router.patch("/addfood", checkAuth, UserController.addFavFood);
 
 router.patch("/delfood", checkAuth, UserController.delFavFood);
 
+router.get("/active/:id", UserController.activeUser);
+router.get("/resetpassword/:id", UserController.resetPass);
+
+
 module.exports = router;

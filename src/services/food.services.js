@@ -3,7 +3,7 @@ var Food = require('../models/food.model')
 exports.getFoods = async (query, page, limit) => {
     try {
         var foods = await Food
-            .find(query, { _id: 1, food_name: 1, id: 1, images: 1, nutrions: 1 })
+            .find(query, {})
             .skip(page * limit)
             .limit(limit)
             .exec();
@@ -51,20 +51,45 @@ exports.newFood = async (paramValue) => {
     }
 }
 
-exports.editFoodByID = async (id,value) => {
+exports.editFoodByAdmin = async (id, value) => {
+    const object = value
+    object.updated_at = new Date();
     try {
-        await Food.updateOne({ _id: id }, { $set: value })
-        .exec()
+        const result = await Food.updateOne({ _id: id }, { $set: object })
+            .exec()
+        if (result.nModified == 0) {
+            throw ("Can't find food to edit")
+        }
     } catch (e) {
         // Log Errors
-        throw Error('Error while Edit Food')
+        throw Error('Edit Food Failed')
+    }
+}
+
+exports.editFoodByUser = async (id, uid, value) => {
+    const object = value
+    object.updated_at = new Date();
+    try {
+        const result = await Food.updateOne({
+            _id: id,
+            userId: uid
+        }, { $set: object })
+            .exec()
+        if (result.nModified == 0) {
+            throw ("Can't find food to edit")
+        }
+
+    } catch (e) {
+        // Log Errors
+        throw Error('Edit Food Failed')
     }
 }
 
 exports.deleteFoodByID = async (id) => {
+    const del = new Date()
     try {
-        await Food.remove({ _id: id })
-        .exec()
+        await Food.updateOne({ _id: id }, { deleted_at: del })
+            .exec()
     } catch (e) {
         // Log Errors
         throw Error('Error while Delete Food')

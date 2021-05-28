@@ -66,7 +66,7 @@ exports.user_signup = (req, res, next) => {
 };
 
 exports.user_login = (req, res, next) => {
-  User.find({
+  const userDetail = User.find({
     $and: [
       { email: req.body.email },
       { email: { $ne: null } }
@@ -108,7 +108,8 @@ exports.user_login = (req, res, next) => {
             message: "Login successfully",
             error: '',
             data: {
-              token: token
+              token: token,
+              role: user[0].role
             }
 
           });
@@ -178,7 +179,7 @@ exports.showDetail = async function (req, res, next) {
         age: currentYear - parseInt(year[0]),
         gender: userDetail.gender,
         targetU: userDetail.targetU,
-        role:  userDetail.role,
+        role: userDetail.role,
         fav: food
       }
 
@@ -324,21 +325,21 @@ exports.addFavFood = async function (req, res, next) {
   const token = req.headers.authorization.split(" ")[1];
   const id = jwt_decode(token);
   try {
-      var foods = await UserService.addFav(id.userId,foodid)
-      return res.status(200).json({
-          status: 200,
-          message: "Successfully Add Favorite",
-          error: '',
-          data: ""
+    var foods = await UserService.addFav(id.userId, foodid)
+    return res.status(200).json({
+      status: 200,
+      message: "Successfully Add Favorite",
+      error: '',
+      data: ""
 
-      });
+    });
   } catch (e) {
-      return res.status(400).json({
-          status: 400,
-          message: "",
-          error: e.message,
-          data: ''
-      });
+    return res.status(400).json({
+      status: 400,
+      message: "",
+      error: e.message,
+      data: ''
+    });
   }
 };
 
@@ -348,25 +349,73 @@ exports.delFavFood = async function (req, res, next) {
   const token = req.headers.authorization.split(" ")[1];
   const id = jwt_decode(token);
   try {
-      var foods = await UserService.delFav(id.userId,foodid)
-      return res.status(200).json({
-          status: 200,
-          message: "Successfully Remove Favorite",
-          error: '',
-          data: ""
-      });
+    var foods = await UserService.delFav(id.userId, foodid)
+    return res.status(200).json({
+      status: 200,
+      message: "Successfully Remove Favorite",
+      error: '',
+      data: ""
+    });
   } catch (e) {
-      return res.status(400).json({
+    return res.status(400).json({
+      status: 400,
+      message: "",
+      error: e.message,
+      data: ''
+    });
+  }
+};
+
+exports.activeUser = async function (req, res, next) {
+  const id = req.params.id;
+  const set = { isActive: true }
+  try {
+    await UserService.editUser(id,set)
+    return res.status(200).json({
+      status: 200,
+      message: "Active User Successful",
+      error: '',
+      data: '',
+    });
+  } catch (e) {
+    return res.status(400).json({
+      status: 400,
+      message: "",
+      error: e.message,
+      data: ''
+    });
+  }
+};
+
+exports.resetPass =  function (req, res, next) {
+  const id = req.params.id;
+  bcrypt.hash("FoodCare@123", 10, async (err, hash) => {
+    if (err) {
+      return res.status(500).json({
+        error: 'Bcrypt.hash at user.controllers.js ' + err
+      });
+    } else {
+      const set = { password: hash }
+      try {
+        console.log(set)
+        await UserService.editUser(id,set)
+        return res.status(200).json({
+          status: 200,
+          message: "Reset Password Successful",
+          error: '',
+          data: '',
+        });
+      } catch (e) {
+        return res.status(400).json({
           status: 400,
           message: "",
           error: e.message,
           data: ''
-      });
-  }
+        });
+      }
+    }
+  });
 };
-
-
-
 
 
 exports.user_delete = (req, res, next) => {
@@ -390,3 +439,4 @@ exports.user_delete = (req, res, next) => {
       });
     });
 };
+

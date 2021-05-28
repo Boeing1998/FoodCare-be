@@ -29,7 +29,7 @@ exports.showDetailMenu = async function (req, res, next) {
     const token = req.headers.authorization.split(" ")[1];
     const id = jwt_decode(token);
 
-    const id_menu = req.body.menuId
+    const id_menu = req.params.menuId
     try {
         let menu = await MenuService.showMenu(id_menu,id.userId)
         const breakfast = await FoodService.getManyFoods(menu.breakfast)

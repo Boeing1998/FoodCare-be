@@ -8,7 +8,7 @@ router.get("/", checkAuth, MenuController.showAllMenuOfUser);
 
 router.post("/create", checkAuth, MenuController.createMenu);
 
-router.get("/detail", checkAuth, MenuController.showDetailMenu);
+router.get("/detail/:menuId", checkAuth, MenuController.showDetailMenu);
 
 // router.put("/edit", checkAuth, MenuController.editMenu);
 

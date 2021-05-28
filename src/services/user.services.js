@@ -43,3 +43,21 @@ exports.checkExits = async (query, page, limit) => {
     }
 }
 
+exports.editUser = async (id, value) => {
+    const object = value
+    try {
+        const result = await User.updateOne({
+            _id: id,
+        }, { $set: object })
+            .exec()
+        if (result.nModified == 0) {
+            throw ("Can't find user to edit")
+        }
+
+    } catch (e) {
+        // Log Errors
+        throw Error('Edit user Failed')
+    }
+}
+
+
