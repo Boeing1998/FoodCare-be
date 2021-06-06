@@ -2,8 +2,27 @@ const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const jwt_decode = require("jwt-decode");
+const nodemailer = require('nodemailer');
+require('dotenv').config();
 
-// require('dotenv').config();
+
+const option = {
+  service: 'gmail',
+  auth: {
+    user: process.env.MAIL_USER, // email
+    pass: process.env.MAIL_PASS // password
+  }
+};
+var transporter = nodemailer.createTransport(option);
+
+// transporter.verify(function(error, success) {
+//   // Nếu có lỗi.
+//   if (error) {
+//       console.log(error);
+//   } else { //Nếu thành công.
+//       console.log('Kết nối thành công!');
+//   }
+// });
 
 const User = require("../models/user.model");
 
@@ -43,6 +62,28 @@ exports.user_signup = (req, res, next) => {
             user
               .save()
               .then(result => {
+                transporter.verify(function (error, success) {
+                  // Nếu có lỗi.
+                  if (error) {
+                    console.log(error);
+                  } else { //Nếu thành công.
+                    console.log('Kết nối thành công!');
+                    var mail = {
+                      from: process.env.MAIL_USER, // Địa chỉ email của người gửi
+                      to: req.body.email, // Địa chỉ email của người gửi
+                      subject: 'Xác Thực Tài Khoản Tại FoodCare', // Tiêu đề mail
+                      text: `Bấm vào link này để kích hoạt tài khoản của bạn : http://localhost:3000/user/active/${result._id}`, // Nội dung mail dạng text
+                    };
+                    //Tiến hành gửi email
+                    transporter.sendMail(mail, function (error, info) {
+                      if (error) { // nếu có lỗi
+                        console.log(error);
+                      } else { //nếu thành công
+                        console.log('Email sent: ' + info.response);
+                      }
+                    });
+                  }
+                });
                 res.status(201).json({
                   status: 201,
                   message: "Sign Up Success",
@@ -370,7 +411,7 @@ exports.activeUser = async function (req, res, next) {
   const id = req.params.id;
   const set = { isActive: true }
   try {
-    await UserService.editUser(id,set)
+    await UserService.editUser(id, set)
     return res.status(200).json({
       status: 200,
       message: "Active User Successful",
@@ -387,7 +428,7 @@ exports.activeUser = async function (req, res, next) {
   }
 };
 
-exports.resetPass =  function (req, res, next) {
+exports.resetPass = function (req, res, next) {
   const id = req.params.id;
   bcrypt.hash("FoodCare@123", 10, async (err, hash) => {
     if (err) {
@@ -398,7 +439,7 @@ exports.resetPass =  function (req, res, next) {
       const set = { password: hash }
       try {
         console.log(set)
-        await UserService.editUser(id,set)
+        await UserService.editUser(id, set)
         return res.status(200).json({
           status: 200,
           message: "Reset Password Successful",

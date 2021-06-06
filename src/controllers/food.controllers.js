@@ -249,12 +249,17 @@ exports.getFoodAdmin = async function (req, res, next) {
 exports.getFood = async function (req, res, next) {
     const page = req.query.page ? parseInt(req.query.page) : 0;
     const limit = req.query.limit ? parseInt(req.query.limit) : 10;
-    
-    const value = req.query
+    const valueOld = req.query
+    const value = {}
+    for (const property in valueOld) {
+        if(valueOld[property] == "true") {
+            value[property] = valueOld[property]
+        } 
+      }
     value.custom = "false"
     value.status = "show"
     value.deleted_at = null
-
+    
     const type = req.query.type ? req.query.type : 'all'
     if (type === 'basicFood') { // isVegetarian: true
         value.is_basic_food = true
@@ -263,10 +268,11 @@ exports.getFood = async function (req, res, next) {
         value.is_recipe = true
     }
 
-    delete value.type
-    delete value.page
-    delete value.limit
+    // delete value.type
+    // delete value.page
+    // delete value.limit
     try {
+        console.log(value)
         var foods = await FoodService.getFoods(value, page, limit)
         return res.status(200).json({
             status: 200,
@@ -339,6 +345,28 @@ exports.searchFood = async function (req, res, next) {
             message: "This is the name of Food like " + keyword,
             error: '',
             data: foods,
+        });
+    } catch (e) {
+        return res.status(400).json({
+            status: 400,
+            message: "",
+            error: e.message,
+            data: ''
+        });
+    }
+}
+
+exports.dmVinh = async (req, res, next) => {
+    const _id = req.body.foodId;
+    let value = { ...req.body }
+    delete value.foodId;
+    try {
+        await FoodService.editFoodByAdmin({ $or: [value, value2] }, value)
+        return res.status(200).json({
+            status: 200,
+            message: "Successfully Edit Food",
+            error: '',
+            data: "",
         });
     } catch (e) {
         return res.status(400).json({
