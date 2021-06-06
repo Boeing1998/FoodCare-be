@@ -30,3 +30,4 @@ router.get("/resetpassword/:id", UserController.resetPass);
 
 
 module.exports = router;
+ 
