@@ -95,3 +95,19 @@ exports.deleteFoodByID = async (id) => {
         throw Error('Error while Delete Food')
     }
 }
+
+
+exports.test = async (id, value) => {
+    const object = value
+    object.updated_at = new Date();
+    try {
+        const result = await Food.updateMany(id, { $set: object })
+            .exec()
+        if (result.nModified == 0) {
+            throw ("Can't find food to edit")
+        }
+    } catch (e) {
+        // Log Errors
+        throw Error('Edit Food Failed')
+    }
+}

@@ -191,9 +191,9 @@ exports.getFoodAdmin = async function (req, res, next) {
         if (valueOld[property] == "true") {
             value[property] = valueOld[property]
         }
-        if(property == "text") {
-            if(valueOld["text"]) {
-                value["$text"] =  { $search: valueOld[property] } 
+        if (property == "text") {
+            if (valueOld["text"]) {
+                value["$text"] = { $search: valueOld[property] }
             }
         }
     }
@@ -235,9 +235,9 @@ exports.getFood = async function (req, res, next) {
         if (valueOld[property] == "true") {
             value[property] = valueOld[property]
         }
-        if(property == "text") {
-            if(valueOld["text"]) {
-                value["$text"] =  { $search: valueOld[property] } 
+        if (property == "text") {
+            if (valueOld["text"]) {
+                value["$text"] = { $search: valueOld[property] }
             }
         }
     }
@@ -285,9 +285,9 @@ exports.getFoodUser = async function (req, res, next) {
         if (valueOld[property] == "true") {
             value[property] = valueOld[property]
         }
-        if(property == "text") {
-            if(valueOld["text"]) {
-                value["$text"] =  { $search: valueOld[property] } 
+        if (property == "text") {
+            if (valueOld["text"]) {
+                value["$text"] = { $search: valueOld[property] }
             }
         }
     }
@@ -324,43 +324,31 @@ exports.getFoodUser = async function (req, res, next) {
     }
 }
 
-exports.test = async function (req, res, next) {
+exports.recommendFood = async function (req, res, next) {
     const token = req.headers.authorization.split(" ")[1];
     const id = jwt_decode(token);
 
-    const page = req.query.page ? parseInt(req.query.page) : 0;
-    const limit = req.query.limit ? parseInt(req.query.limit) : 10;
-    const valueOld = req.query
+    const userDetail = await UserService.getUserbyId(id.userId)
+    const diet = userDetail.diet
+    delete diet.diet
+
+    const valueOld = diet
     const value = {}
     for (const property in valueOld) {
-        if (valueOld[property] == "true") {
+        if (valueOld[property] == "false") {
             value[property] = valueOld[property]
         }
-        if(property == "text") {
-            if(valueOld["text"]) {
-                value["$text"] =  { $search: valueOld[property] } 
-            }
-        }
     }
-    value.custom = "true"
+    value.custom = "false"
     value.status = "show"
     value.deleted_at = null
-    value.userId = id.userId
-
-    const type = req.query.type ? req.query.type : 'all'
-    if (type === 'basicFood') { // isVegetarian: true
-        value.is_basic_food = true
-    }
-    if (type === 'recipe') { // isVegetarian: false
-        value.is_recipe = true
-    }
-
+    value.is_recipe = true
+    // console.log(value)
     try {
-        console.log(value)
-        var foods = await FoodService.getFoods(value, page, limit)
+        var foods = await FoodService.getFoods(value, 0, 50)
         return res.status(200).json({
             status: 200,
-            message: "Successfully Food Retrieved",
+            message: "Successfully Food Recommend Retrieved",
             error: '',
             data: foods
 
@@ -374,6 +362,11 @@ exports.test = async function (req, res, next) {
         });
     }
 }
+
+
+
+
+
 
 
 // exports.searchFood = async function (req, res, next) {
@@ -398,14 +391,17 @@ exports.test = async function (req, res, next) {
 // }
 
 exports.dmVinh = async (req, res, next) => {
-    const _id = req.body.foodId;
-    let value = { ...req.body }
-    delete value.foodId;
+    // const _id = req.body.foodId;
+    let value = { fruit: "true" }
+    // delete value.foodId;
+
+    let ar = []
+
     try {
-        await FoodService.editFoodByAdmin({ $or: [value, value2] }, value)
+        await FoodService.test({ $or: ar }, value)
         return res.status(200).json({
             status: 200,
-            message: "Successfully Edit Food",
+            message: "Successfully Edit thanhf cong Food",
             error: '',
             data: "",
         });
