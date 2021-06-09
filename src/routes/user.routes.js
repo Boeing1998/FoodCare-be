@@ -28,6 +28,9 @@ router.patch("/delfood", checkAuth, UserController.delFavFood);
 router.get("/active/:id", UserController.activeUser);
 router.get("/resetpassword/:id", UserController.resetPass);
 
+router.get("/admin/show",checkAdmin,UserController.getAllUser)
+router.patch("/:id/ban",checkAdmin,UserController.banUser)
+router.delete("/:id/delete",checkAdmin,UserController.user_delete)
 
 module.exports = router;
  

@@ -15,15 +15,6 @@ const option = {
 };
 var transporter = nodemailer.createTransport(option);
 
-// transporter.verify(function(error, success) {
-//   // Nếu có lỗi.
-//   if (error) {
-//       console.log(error);
-//   } else { //Nếu thành công.
-//       console.log('Kết nối thành công!');
-//   }
-// });
-
 const User = require("../models/user.model");
 
 const FoodService = require('../services/food.services')
@@ -507,7 +498,7 @@ exports.resetPass = function (req, res, next) {
 
 
 exports.user_delete = (req, res, next) => {
-  User.remove({ _id: req.params.userId })
+  User.remove({ _id: req.params.id })
     .exec()
     .then(result => {
       res.status(200).json({
@@ -528,3 +519,61 @@ exports.user_delete = (req, res, next) => {
     });
 };
 
+exports.getAllUser = async function (req, res, next) {
+  const page = req.query.page ? parseInt(req.query.page) : 0;
+  const limit = req.query.limit ? parseInt(req.query.limit) : 10;
+  const valueOld = req.query
+  const value = {}
+  for (const property in valueOld) {
+    if (valueOld[property] == "true") {
+      value[property] = true
+    } if (valueOld[property] == "false") {
+      value[property] = false
+    }
+  }
+
+  try {
+    var user = await UserService.getUser(value, page, limit)
+    return res.status(200).json({
+      status: 200,
+      message: "Successfully Users Retrieved",
+      error: '',
+      data: user
+
+    });
+  } catch (e) {
+    return res.status(400).json({
+      status: 400,
+      message: "",
+      error: e.message,
+      data: ''
+    });
+  }
+}
+
+exports.banUser = async (req, res, next) => {
+  try {
+    let value = {}
+    const id = req.params.id
+    const userDetail = await UserService.getUserbyId(id)
+    if (userDetail.isBanned) {
+      value = { isBanned: false }
+    } else {
+      value = { isBanned: true }
+    }
+    await UserService.editUser(id, value)
+    return res.status(200).json({
+      status: 200,
+      message: "Successfully Edit User",
+      error: '',
+      data: "",
+    });
+  } catch (e) {
+    return res.status(400).json({
+      status: 400,
+      message: "",
+      error: e.message,
+      data: ''
+    });
+  }
+}

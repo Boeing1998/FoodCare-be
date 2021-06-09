@@ -27,7 +27,8 @@ const userSchema = mongoose.Schema({
             weight: 0,
             targetU: 0,
             gender: 0,
-            dob:  "1990-01-01",
+            activity: 1,
+            dob: "1990-01-01",
             age: 0,
         }
     },

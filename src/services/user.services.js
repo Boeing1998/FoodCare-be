@@ -57,4 +57,16 @@ exports.editUser = async (id, value) => {
     }
 }
 
-
+exports.getUser = async (query, page, limit) => {
+    try {
+        var result = await User
+            .find(query, {})
+            .skip(page * limit)
+            .limit(limit)
+            .exec();
+        return result;
+    } catch (e) {
+        // Log Errors
+        throw Error('Error while Getting Users')
+    }
+}
