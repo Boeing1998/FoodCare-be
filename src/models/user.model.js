@@ -1,6 +1,6 @@
-const mongoose = require('mongoose');
+const { Schema, model } = require('mongoose');
 
-const userSchema = mongoose.Schema({
+const userSchema = new Schema({
     _id: mongoose.Schema.Types.ObjectId,
     email: {
         type: String,
@@ -83,6 +83,9 @@ const userSchema = mongoose.Schema({
     },
     isBanned: { type: Boolean, default: false },
     isActive: { type: Boolean, default: false }
+},{
+    strict: false,
 });
 
-module.exports = mongoose.model('User', userSchema);
+
+module.exports = model('User', userSchema);
