@@ -69,3 +69,25 @@ exports.delFoodFromColl = async (idParam, collParam, foodParam) => {
         throw Error('Error while Del Favorite')
     }
 }
+
+exports.deleteCollection = async (user, coll) => {
+    try {
+        const result = await CollecTion.deleteOne({ userId: user, _id: coll }).exec()
+        if (result.deletedCount == 0) {
+            throw ('Error while')
+        }
+    } catch (e) {
+        throw Error('Error while Delete Collection')
+    }
+}
+
+exports.editCollection2 = async (_id, uid, value) => {
+    try {
+        const result = await CollecTion.updateOne({ _id: _id, userId: uid }, { $set: value }).exec()
+        if (result.nModified == 0) {
+            throw ("Can't find food to edit")
+        }
+    } catch (e) {
+        throw Error('Edit collection Failed')
+    }
+}

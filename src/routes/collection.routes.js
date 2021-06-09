@@ -13,6 +13,10 @@ router.get("/show",checkAuth, CollectionController.showColection);
 
 router.get("/:collectionID",checkAuth, CollectionController.detailColection);
 
+router.delete("/:collectionID/drop",checkAuth, CollectionController.dropColl);
+
+router.patch("/edit", checkAuth, CollectionController.editCollection);
+
 router.patch("/add", checkAuth, CollectionController.addFood);
 
 router.patch("/del", checkAuth, CollectionController.delFood);

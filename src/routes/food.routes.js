@@ -24,6 +24,8 @@ router.patch("/admin/edit", checkAdmin, FoodController.editFoodAdmin);
 
 router.patch("/delete/:foodId", checkAuth, FoodController.deleteFood);
 
-router.post("/search", FoodController.searchFood);
+router.get("/test", checkAuth, FoodController.test);
+
+// router.post("/search", FoodController.searchFood);
 
 module.exports = router;

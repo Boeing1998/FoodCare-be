@@ -1,6 +1,6 @@
-const mongoose = require('mongoose');
+const { Schema, model } = require('mongoose');
 
-const collecTionSchema = mongoose.Schema({
+const collecTionSchema = new Schema({
     title: String,
     description: String,
     image: String,
@@ -13,6 +13,10 @@ const collecTionSchema = mongoose.Schema({
         default: 0
     },
     userId: String
-});
+},
+{
+    strict: false,
+}
+);
 
-module.exports = mongoose.model('CollecTion', collecTionSchema);
+module.exports = model('CollecTion', collecTionSchema);

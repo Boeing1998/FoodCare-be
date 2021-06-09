@@ -92,13 +92,13 @@ exports.detailColection = async (req, res, next) => {
 }
 
 exports.addFood = async function (req, res, next) {
-    
+
     const token = req.headers.authorization.split(" ")[1];
     const id = jwt_decode(token);
     const collId = req.body.collectionId
     const foodid = req.body.foodId; // đây là _id của mongo
     try {
-        var foods = await CollectionService.addFoodIntoColl(id.userId,collId, foodid)
+        var foods = await CollectionService.addFoodIntoColl(id.userId, collId, foodid)
         return res.status(200).json({
             status: 200,
             message: "Successfully Add Food into this Collection",
@@ -115,13 +115,13 @@ exports.addFood = async function (req, res, next) {
     }
 };
 
-exports.delFood = async function (req, res, next) {  
+exports.delFood = async function (req, res, next) {
     const token = req.headers.authorization.split(" ")[1];
     const id = jwt_decode(token);
     const collId = req.body.collectionId
     const foodid = req.body.foodId; // đây là _id của mongo
     try {
-        var foods = await CollectionService.delFoodFromColl(id.userId,collId, foodid)
+        var foods = await CollectionService.delFoodFromColl(id.userId, collId, foodid)
         return res.status(200).json({
             status: 200,
             message: "Successfully Remove Food into this Collection",
@@ -137,3 +137,52 @@ exports.delFood = async function (req, res, next) {
         });
     }
 };
+
+exports.dropColl = async (req, res, next) => {
+    try {
+        const coll = req.params.collectionID;
+        const token = req.headers.authorization.split(" ")[1];
+        const id = jwt_decode(token);
+
+        await CollectionService.deleteCollection(id.userId, coll)
+        return res.status(200).json({
+            status: 200,
+            message: "Delete Collection Success",
+            error: '',
+            data: '',
+
+        });
+    } catch (e) {
+        return res.status(400).json({
+            status: 400,
+            message: "Delete Collection Failed",
+            error: e.message,
+            data: ''
+        });
+    }
+}
+
+exports.editCollection = async (req, res, next) => {
+    try {
+        const token = req.headers.authorization.split(" ")[1];
+        const id = jwt_decode(token);
+
+        const _id = req.body.collId;
+        let value = { ...req.body }
+        delete value.collId;
+        await CollectionService.editCollection2(_id, id.userId, value)
+        return res.status(200).json({
+            status: 200,
+            message: "Successfully Edit Collection",
+            error: '',
+            data: "",
+        });
+    } catch (e) {
+        return res.status(400).json({
+            status: 400,
+            message: "",
+            error: e.message,
+            data: ''
+        });
+    }
+}

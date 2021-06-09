@@ -2,35 +2,7 @@ const mongoose = require("mongoose");
 const jwt_decode = require("jwt-decode");
 
 const FoodService = require('../services/food.services')
-
-// exports.getFoods = async function (req, res, next) {
-//     const page = req.query.page ? parseInt(req.query.page) : 0;
-//     const limit = req.query.limit ? parseInt(req.query.limit) : 10;
-//     const type = req.query.type ? req.query.type : 'all'
-//     try {
-//         if (type === 'all') {
-//             var foods = await FoodService.getFoods({}, page, limit)
-//         } if (type === 'basicFood') { // isVegetarian: true
-//             var foods = await FoodService.getFoods({ is_basic_food: true }, page, limit)
-//         } if (type === 'recipe') { // isVegetarian: false
-//             var foods = await FoodService.getFoods({ is_recipe: true }, page, limit)
-//         }
-//         return res.status(200).json({
-//             status: 200,
-//             message: "Successfully Food Retrieved",
-//             error: '',
-//             data: foods
-
-//         });
-//     } catch (e) {
-//         return res.status(400).json({
-//             status: 400,
-//             message: "",
-//             error: e.message,
-//             data: ''
-//         });
-//     }
-// }
+const UserService = require('../services/user.services')
 
 exports.products_get_product = async function (req, res, next) {
     const id = req.params.foodId; //đây là id mongo
@@ -213,7 +185,19 @@ exports.getFoodAdmin = async function (req, res, next) {
     const page = req.query.page ? parseInt(req.query.page) : 0;
     const limit = req.query.limit ? parseInt(req.query.limit) : 10;
 
-    const value = req.query
+    const valueOld = req.query
+    const value = {}
+    for (const property in valueOld) {
+        if (valueOld[property] == "true") {
+            value[property] = valueOld[property]
+        }
+        if(property == "text") {
+            if(valueOld["text"]) {
+                value["$text"] =  { $search: valueOld[property] } 
+            }
+        }
+    }
+
     value.deleted_at = null
 
     const type = req.query.type ? req.query.type : 'all'
@@ -223,10 +207,6 @@ exports.getFoodAdmin = async function (req, res, next) {
     if (type === 'recipe') { // isVegetarian: false
         value.is_recipe = true
     }
-
-    delete value.type
-    delete value.page
-    delete value.limit
     try {
         var foods = await FoodService.getFoods(value, page, limit)
         return res.status(200).json({
@@ -252,14 +232,19 @@ exports.getFood = async function (req, res, next) {
     const valueOld = req.query
     const value = {}
     for (const property in valueOld) {
-        if(valueOld[property] == "true") {
+        if (valueOld[property] == "true") {
             value[property] = valueOld[property]
-        } 
-      }
+        }
+        if(property == "text") {
+            if(valueOld["text"]) {
+                value["$text"] =  { $search: valueOld[property] } 
+            }
+        }
+    }
     value.custom = "false"
     value.status = "show"
     value.deleted_at = null
-    
+
     const type = req.query.type ? req.query.type : 'all'
     if (type === 'basicFood') { // isVegetarian: true
         value.is_basic_food = true
@@ -268,9 +253,6 @@ exports.getFood = async function (req, res, next) {
         value.is_recipe = true
     }
 
-    // delete value.type
-    // delete value.page
-    // delete value.limit
     try {
         console.log(value)
         var foods = await FoodService.getFoods(value, page, limit)
@@ -292,17 +274,29 @@ exports.getFood = async function (req, res, next) {
 }
 
 exports.getFoodUser = async function (req, res, next) {
-    const page = req.query.page ? parseInt(req.query.page) : 0;
-    const limit = req.query.limit ? parseInt(req.query.limit) : 10;
-    const type = req.query.type ? req.query.type : 'all'
     const token = req.headers.authorization.split(" ")[1];
     const id = jwt_decode(token);
 
-    const value = req.query
-    value.custom = "false"
+    const page = req.query.page ? parseInt(req.query.page) : 0;
+    const limit = req.query.limit ? parseInt(req.query.limit) : 10;
+    const valueOld = req.query
+    const value = {}
+    for (const property in valueOld) {
+        if (valueOld[property] == "true") {
+            value[property] = valueOld[property]
+        }
+        if(property == "text") {
+            if(valueOld["text"]) {
+                value["$text"] =  { $search: valueOld[property] } 
+            }
+        }
+    }
+    value.custom = "true"
     value.status = "show"
     value.deleted_at = null
+    value.userId = id.userId
 
+    const type = req.query.type ? req.query.type : 'all'
     if (type === 'basicFood') { // isVegetarian: true
         value.is_basic_food = true
     }
@@ -310,20 +304,15 @@ exports.getFoodUser = async function (req, res, next) {
         value.is_recipe = true
     }
 
-    delete value.type
-    delete value.page
-    delete value.limit
-
-    const value2 = value
-    value2.userId = id.userId
-    value2.custom = "true"
     try {
-        var foods = await FoodService.getFoods({ $or: [value, value2] }, page, limit)
+        console.log(value)
+        var foods = await FoodService.getFoods(value, page, limit)
         return res.status(200).json({
             status: 200,
             message: "Successfully Food Retrieved",
             error: '',
             data: foods
+
         });
     } catch (e) {
         return res.status(400).json({
@@ -335,16 +324,46 @@ exports.getFoodUser = async function (req, res, next) {
     }
 }
 
-exports.searchFood = async function (req, res, next) {
-    let keyword = req.body.keyword
-    let value = { $text: { $search: keyword } }
+exports.test = async function (req, res, next) {
+    const token = req.headers.authorization.split(" ")[1];
+    const id = jwt_decode(token);
+
+    const page = req.query.page ? parseInt(req.query.page) : 0;
+    const limit = req.query.limit ? parseInt(req.query.limit) : 10;
+    const valueOld = req.query
+    const value = {}
+    for (const property in valueOld) {
+        if (valueOld[property] == "true") {
+            value[property] = valueOld[property]
+        }
+        if(property == "text") {
+            if(valueOld["text"]) {
+                value["$text"] =  { $search: valueOld[property] } 
+            }
+        }
+    }
+    value.custom = "true"
+    value.status = "show"
+    value.deleted_at = null
+    value.userId = id.userId
+
+    const type = req.query.type ? req.query.type : 'all'
+    if (type === 'basicFood') { // isVegetarian: true
+        value.is_basic_food = true
+    }
+    if (type === 'recipe') { // isVegetarian: false
+        value.is_recipe = true
+    }
+
     try {
-        var foods = await FoodService.getFoods(value, 0, 3)
+        console.log(value)
+        var foods = await FoodService.getFoods(value, page, limit)
         return res.status(200).json({
             status: 200,
-            message: "This is the name of Food like " + keyword,
+            message: "Successfully Food Retrieved",
             error: '',
-            data: foods,
+            data: foods
+
         });
     } catch (e) {
         return res.status(400).json({
@@ -355,6 +374,28 @@ exports.searchFood = async function (req, res, next) {
         });
     }
 }
+
+
+// exports.searchFood = async function (req, res, next) {
+//     let keyword = req.body.keyword
+//     let value = { $text: { $search: keyword } }
+//     try {
+//         var foods = await FoodService.getFoods(value, 0, 3)
+//         return res.status(200).json({
+//             status: 200,
+//             message: "This is the name of Food like " + keyword,
+//             error: '',
+//             data: foods,
+//         });
+//     } catch (e) {
+//         return res.status(400).json({
+//             status: 400,
+//             message: "",
+//             error: e.message,
+//             data: ''
+//         });
+//     }
+// }
 
 exports.dmVinh = async (req, res, next) => {
     const _id = req.body.foodId;
