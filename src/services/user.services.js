@@ -18,8 +18,6 @@ exports.delFav = async (idParam, favParam) => {
     }
 }
 
-
-
 exports.getUserbyId = async (idParam) => {
     try {
         var userDetail = await User
@@ -44,11 +42,10 @@ exports.checkExits = async (query, page, limit) => {
 }
 
 exports.editUser = async (id, value) => {
-    const object = value
     try {
         const result = await User.updateOne({
             _id: id,
-        }, { $set: object })
+        }, { $set: value })
             .exec()
         if (result.nModified == 0) {
             throw ("Can't find user to edit")

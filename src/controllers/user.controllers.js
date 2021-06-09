@@ -124,6 +124,44 @@ exports.user_login = (req, res, next) => {
           data: '',
         });
       }
+      if (user[0].isBanned) {
+        return res.status(401).json({
+          status: 401,
+          message: "Your account has been banned",
+          error: '',
+          data: ''
+        });
+      }
+      if (!user[0].isActive) {
+        transporter.verify(function (error, success) {
+          // Nếu có lỗi.
+          if (error) {
+            console.log(error);
+          } else { //Nếu thành công.
+            console.log('Kết nối thành công!');
+            var mail = {
+              from: process.env.MAIL_USER, // Địa chỉ email của người gửi
+              to: req.body.email, // Địa chỉ email của người gửi
+              subject: 'Xác Thực Tài Khoản Tại FoodCare', // Tiêu đề mail
+              text: `Bấm vào link này để kích hoạt tài khoản của bạn : http://localhost:3000/user/active/${user[0]._id}`, // Nội dung mail dạng text
+            };
+            //Tiến hành gửi email
+            transporter.sendMail(mail, function (error, info) {
+              if (error) { // nếu có lỗi
+                console.log(error);
+              } else { //nếu thành công
+                console.log('Email sent: ' + info.response);
+              }
+            });
+          }
+        });
+        return res.status(401).json({
+          status: 401,
+          message: "You must activate your account, please verify your email address",
+          error: '',
+          data: ''
+        });
+      }
       bcrypt.compare(req.body.password, user[0].password, (err, result) => {
         if (err) {
           return res.status(401).json({
@@ -133,7 +171,9 @@ exports.user_login = (req, res, next) => {
             data: ''
           });
         }
+
         if (result) {
+
           const token = jwt.sign(
             {
               email: user[0].email,
@@ -235,52 +275,59 @@ exports.showDetail = async function (req, res, next) {
   }
 };
 
+// exports.editUser = async (req, res, next) => {
+//   const token = req.headers.authorization.split(" ")[1];
+//   const id = jwt_decode(token);
+
+//   const userDetail = await UserService.getUserbyId(id.userId)
+
+//   const firstName = req.body.firstName || userDetail.firstName
+//   const lastName = req.body.lastName || userDetail.lastName
+//   const dob = req.body.dob || userDetail.dob
+//   const gender = req.body.gender || userDetail.gender
+//   const targetU = req.body.targetU || userDetail.targetU
+//   const customFood = req.body.customFood || userDetail.customFood
+//   const collecTion = userDetail.collecTion
+//   const fav = userDetail.fav
+//   const menu = userDetail.menu
+//   const role = userDetail.isBanned
+//   const isBanned = userDetail.isBanned
+
+//   const updateOps = {
+//     firstName: firstName,
+//     lastName: lastName,
+//     dob: dob,
+//     gender: gender,
+//     targetU: targetU,
+//     customFood: customFood,
+//     collecTion: collecTion,
+//     fav: fav,
+//     menu: menu,
+//     isBanned: isBanned,
+//   };
+
 exports.editUser = async (req, res, next) => {
   const token = req.headers.authorization.split(" ")[1];
   const id = jwt_decode(token);
-  const userDetail = await UserService.getUserbyId(id.userId)
 
-  const firstName = req.body.firstName || userDetail.firstName
-  const lastName = req.body.lastName || userDetail.lastName
-  const dob = req.body.dob || userDetail.dob
-  const gender = req.body.gender || userDetail.gender
-  const targetU = req.body.targetU || userDetail.targetU
-  const customFood = req.body.customFood || userDetail.customFood
-  const collecTion = userDetail.collecTion
-  const fav = userDetail.fav
-  const menu = userDetail.menu
-  const role = userDetail.isBanned
-  const isBanned = userDetail.isBanned
+  let value = { ...req.body }
 
-  const updateOps = {
-    firstName: firstName,
-    lastName: lastName,
-    dob: dob,
-    gender: gender,
-    targetU: targetU,
-    customFood: customFood,
-    collecTion: collecTion,
-    fav: fav,
-    menu: menu,
-    isBanned: isBanned,
-  };
-
-  User.updateOne({ _id: id.userId }, { $set: updateOps })
-    .exec()
-    .then(result => {
-      res.status(200).json({
-        status: 200,
-        message: "Edit User Success",
-        error: '',
-        data: '',
-      });
-    })
-    .catch(err => {
-      console.log(err);
-      res.status(500).json({
-        error: err
-      });
+  try {
+    await UserService.editUser(id.userId, value)
+    return res.status(200).json({
+      status: 200,
+      message: "Successfully Edit User",
+      error: '',
+      data: "",
     });
+  } catch (e) {
+    return res.status(400).json({
+      status: 400,
+      message: "",
+      error: e.message,
+      data: ''
+    });
+  }
 }
 
 exports.changePassword = async (req, res, next) => {

@@ -17,7 +17,7 @@ router.delete("/logout", checkAuth, UserController.logout)
 
 router.get("/profile", checkAuth, UserController.showDetail);
 
-router.put("/edit", checkAuth, UserController.editUser);
+router.patch("/edit", checkAuth, UserController.editUser);
 
 router.put("/password", checkAuth, ChangePassValidation, UserController.changePassword);
 
