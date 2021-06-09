@@ -58,7 +58,7 @@ exports.user_signup = (req, res, next) => {
               _id: new mongoose.Types.ObjectId(),
               email: req.body.email || "Error mail null",
               password: hash,
-              username : req.body.email.split('@')[0]
+              username: req.body.email.split('@')[0]
             });
             user
               .save()
@@ -204,27 +204,25 @@ exports.showDetail = async function (req, res, next) {
     let token1 = req.headers.authorization.split(" ")[1];
     let id1 = jwt_decode(token1);
     var userDetail = await UserService.getUserbyId(id1.userId)
-    var currentYear = new Date().getFullYear()
-    var year = userDetail.dob.split("-")
-    let food = await FoodService.getManyFoods(userDetail.fav)
-
+    // var currentYear = new Date().getFullYear()
+    // var year = userDetail.dob.split("-")
+    // let food = await FoodService.getManyFoods(userDetail.fav)
+    // userDetail.fav = food
     return res.status(200).json({
       status: 200,
       message: "Successfully User Details Retrieved",
       error: '',
-      data: {
-        isBanned: userDetail.isBanned,
-        _id: userDetail._id,
-        email: userDetail.email,
-        firstName: userDetail.firstName,
-        lastName: userDetail.lastName,
-        dob: userDetail.dob,
-        age: currentYear - parseInt(year[0]),
-        gender: userDetail.gender,
-        targetU: userDetail.targetU,
-        role: userDetail.role,
-        fav: food
-      }
+      data: userDetail
+      // {
+      //   isBanned: userDetail.isBanned,
+      //   _id: userDetail._id,
+      //   isActive: userDetail.isActive,
+      //   email: userDetail.email,
+      //   profile: userDetail.profile,
+      //   age:  currentYear - parseInt(userDetail.profile.dob.split("-")[0]),
+      //   role: userDetail.role,
+      //   fav: food
+      // }
 
     });
   } catch (e) {
