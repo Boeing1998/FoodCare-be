@@ -58,6 +58,7 @@ exports.user_signup = (req, res, next) => {
               _id: new mongoose.Types.ObjectId(),
               email: req.body.email || "Error mail null",
               password: hash,
+              username : req.body.email.split('@')[0]
             });
             user
               .save()
@@ -150,7 +151,8 @@ exports.user_login = (req, res, next) => {
             error: '',
             data: {
               token: token,
-              role: user[0].role
+              role: user[0].role,
+              username: user[0].username,
             }
 
           });

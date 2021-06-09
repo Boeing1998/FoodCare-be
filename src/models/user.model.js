@@ -64,29 +64,19 @@ const userSchema = mongoose.Schema({
     },
     menu: {
         type: Array, default: [{
-            breakfast: {
-                type: Object, default: {
-                    collId: null,
-                    fav: false
-                }
-            }
+            name: "Breakfast",
+            collId: null,
+            fav: false
         },
         {
-            lunch: {
-                type: Object, default: {
-                    collId: null,
-                    fav: false
-                }
-            }
-
+            name: "Lunch",
+            collId: null,
+            fav: false
         },
         {
-            dinner: {
-                type: Object, default: {
-                    collId: null,
-                    fav: false
-                }
-            }
+            name: "Dinner",
+            collId: null,
+            fav: false
         }
         ]
     },
