@@ -10,6 +10,7 @@ const userRoutes = require("./src/routes/user.routes");
 const foodRoutes = require("./src/routes/food.routes");
 const collectionRoutes = require("./src/routes/collection.routes");
 const menuRoutes = require("./src/routes/menu.routes");
+const favRoutes = require("./src/routes/favorite.routes");
 
 const { json } = require("express");
 
@@ -42,6 +43,7 @@ app.use("/user", userRoutes);
 app.use("/food", foodRoutes);
 app.use("/coll", collectionRoutes);
 app.use("/menu", menuRoutes);
+app.use("/fav", favRoutes);
 app.get("/", (req, res) => {
     res.send("Huy oi lam on");
 })

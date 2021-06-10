@@ -577,3 +577,26 @@ exports.banUser = async (req, res, next) => {
     });
   }
 }
+
+exports.getFoodFav = async function (req, res, next) {
+  try {
+    let token1 = req.headers.authorization.split(" ")[1];
+    let id1 = jwt_decode(token1);
+    var userDetail = await UserService.getUserbyId(id1.userId)
+
+    let food = await FoodService.getManyFoods(userDetail.fav)
+    return res.status(200).json({
+      status: 200,
+      message: "Successfully User's Favorite Food Retrieved",
+      error: '',
+      data: food
+    });
+  } catch (e) {
+    return res.status(400).json({
+      status: 400,
+      message: "",
+      error: e.message,
+      data: ''
+    });
+  }
+};
