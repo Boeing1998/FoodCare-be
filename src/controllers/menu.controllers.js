@@ -6,9 +6,9 @@ const FoodService = require('../services/food.services')
 exports.createMenu = async function (req, res, next) {
     const token = req.headers.authorization.split(" ")[1];
     const id = jwt_decode(token);
-
     try {
-        let menu = await MenuService.newMenu(id.userId)
+        const day = req.body.date
+        let menu = await MenuService.newMenu(id.userId,day)
         return res.status(200).json({
             status: 200,
             message: "Successfully Create menu",

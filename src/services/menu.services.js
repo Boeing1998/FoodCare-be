@@ -1,9 +1,9 @@
 const Menu = require('../models/menu.model')
 const FoodService = require('../services/food.services')
 
-exports.newMenu = async (paramValue) => {
+exports.newMenu = async (paramValue, date) => {
     try {
-        const coll = await new Menu({ userId: paramValue })
+        const coll = await new Menu({ userId: paramValue, dayMenu: date })
         await coll.save()
         return coll._id
     } catch (e) {

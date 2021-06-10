@@ -30,7 +30,7 @@ exports.getManyFoods = async (idParam) => {
     try {
         let foods = await Promise.all(idParam.map(async item => {
             let food = await Food
-                .findOne({ _id: item }, { _id: 1, food_name: 1, id: 1, images: 1, nutrions: 1 })
+                .findOne({ _id: item }, {})
             return food
         }))
         return foods
