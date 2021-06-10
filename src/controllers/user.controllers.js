@@ -585,6 +585,7 @@ exports.getFoodFav = async function (req, res, next) {
     var userDetail = await UserService.getUserbyId(id1.userId)
 
     let food = await FoodService.getManyFoods(userDetail.fav)
+    // userDetail.fav = food
     return res.status(200).json({
       status: 200,
       message: "Successfully User's Favorite Food Retrieved",

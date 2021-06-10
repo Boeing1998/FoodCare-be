@@ -9,5 +9,6 @@ const checkAuth = require('../helper/check-auth');
 
 router.get("/:id",checkAuth, FavoriteController.createFav);
 
+router.get("/user/show",checkAuth, FavoriteController.findFav);
 
 module.exports = router;

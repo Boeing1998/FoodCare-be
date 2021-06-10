@@ -15,7 +15,7 @@ exports.findFav = async (value) => {
         var favDetail = await Favorite
             .find(value)
             .exec()
-        return favDetail[0];
+        return favDetail;
 
     } catch (e) {
         throw Error('Error while get fav')

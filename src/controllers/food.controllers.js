@@ -161,7 +161,7 @@ exports.viewRequest = async function (req, res, next) {
 
 }
 
-exports. deleteFood = async (req, res, next) => {
+exports.deleteFood = async (req, res, next) => {
     const _id = req.params.foodId;
     try {
         await FoodService.deleteFoodByID(_id)
@@ -328,9 +328,14 @@ exports.recommendFood = async function (req, res, next) {
     const token = req.headers.authorization.split(" ")[1];
     const id = jwt_decode(token);
 
-    const userDetail = await UserService.getUserbyId(id.userId)
-    const diet = userDetail.diet
-    delete diet.diet
+    const detailUser = await UserService.getUserbyId(id.userId)
+    const uDiet = detailUser.diet
+    // const uProfile = detailUser.profile
+    const uPlan = detailUser.plan
+    user_diet = uPlan.diet.toString();
+    delete uPlan.diet
+
+    const diet = { ...uDiet, ...uPlan }
 
     const valueOld = diet
     const value = {}
@@ -363,32 +368,38 @@ exports.recommendFood = async function (req, res, next) {
     }
 }
 
+exports.recommend2Food = async function (req, res, next) {
+    const valueOld = req.query
+    const value = {}
+    for (const property in valueOld) {
+        if (valueOld[property] == "false") {
+            value[property] = valueOld[property]
+        }
+    }
+    value.custom = "false"
+    value.status = "show"
+    value.deleted_at = null
+    value.is_recipe = true
+    // console.log(value)
+    try {
+        var foods = await FoodService.getFoods(value, 0, 50)
+        return res.status(200).json({
+            status: 200,
+            message: "Successfully Food Recommend Retrieved",
+            error: '',
+            data: foods
 
+        });
+    } catch (e) {
+        return res.status(400).json({
+            status: 400,
+            message: "",
+            error: e.message,
+            data: ''
+        });
+    }
+}
 
-
-
-
-
-// exports.searchFood = async function (req, res, next) {
-//     let keyword = req.body.keyword
-//     let value = { $text: { $search: keyword } }
-//     try {
-//         var foods = await FoodService.getFoods(value, 0, 3)
-//         return res.status(200).json({
-//             status: 200,
-//             message: "This is the name of Food like " + keyword,
-//             error: '',
-//             data: foods,
-//         });
-//     } catch (e) {
-//         return res.status(400).json({
-//             status: 400,
-//             message: "",
-//             error: e.message,
-//             data: ''
-//         });
-//     }
-// }
 
 exports.dmVinh = async (req, res, next) => {
     // const _id = req.body.foodId;

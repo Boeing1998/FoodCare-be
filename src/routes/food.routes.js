@@ -25,6 +25,7 @@ router.patch("/admin/edit", checkAdmin, FoodController.editFoodAdmin);
 router.patch("/delete/:foodId", checkAuth, FoodController.deleteFood);
 
 router.get('/user/recommend', checkAuth, FoodController.recommendFood)
+router.get('/recommend/', FoodController.recommend2Food)
 
 router.patch("/test", FoodController.dmVinh);
 
