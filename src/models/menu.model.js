@@ -15,7 +15,7 @@ const MenuSchema = new Schema({
         default: []
     },
     meal: { type: Array, default: []},
-    dayMenu: { type: Date, default: Date.now }
+    dayMenu: String, 
 },
     {
         strict: false,
