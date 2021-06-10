@@ -31,6 +31,9 @@ const userSchema = new Schema({
             age: 0,
         }
     },
+    plan: { type: Object, default: {
+        diet : 0,
+    }},
     diet: {
         type: Object, default: {
             gluten: "true",
@@ -51,7 +54,7 @@ const userSchema = new Schema({
             starchy_vegetables: "true",
             fats_nuts: "true",
             fruit: "true",
-            diet: 0
+            
         }
     },
     nutrition: {

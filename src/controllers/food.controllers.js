@@ -161,7 +161,7 @@ exports.viewRequest = async function (req, res, next) {
 
 }
 
-exports.deleteFood = async (req, res, next) => {
+exports. deleteFood = async (req, res, next) => {
     const _id = req.params.foodId;
     try {
         await FoodService.deleteFoodByID(_id)
