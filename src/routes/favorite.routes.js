@@ -11,4 +11,6 @@ router.get("/:id",checkAuth, FavoriteController.createFav);
 
 router.get("/user/show",checkAuth, FavoriteController.findFav);
 
+router.get("/test/test", FavoriteController.test);
+
 module.exports = router;

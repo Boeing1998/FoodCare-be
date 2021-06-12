@@ -14,6 +14,7 @@ exports.findFav = async (value) => {
     try {
         var favDetail = await Favorite
             .find(value)
+            .sort({quantity: -1})
             .exec()
         return favDetail;
 
